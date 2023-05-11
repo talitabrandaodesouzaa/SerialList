@@ -5,20 +5,30 @@ let tarefas = []
 window.addEventListener("load", () => {
     tarefas = JSON.parse(localStorage.getItem("tarefas")) || []
     atualizar()
- 
-} )
-function atualizar(){
-    localStorage.setItem("tarefas", JSON.stringify (tarefas))
+
+})
+function atualizar() {
+    localStorage.setItem("tarefas", JSON.stringify(tarefas))
     document.querySelector("#tarefas").innerHTML = ""
-    tarefas.forEach(tarefa => 
-    document.querySelector("#tarefas").innerHTML += criarCard(tarefa))
+    tarefas.forEach(tarefa =>
+        document.querySelector("#tarefas").innerHTML += criarCard(tarefa))
+
+        const total = tarefas.reduce(
+            (acc, tarefa) => acc += Number(tarefa.pontos), 0
+        )
+        const pontosObtidos = tarefas
+        .filter(tarefa => tarefa.concluida)
+        .reduce(
+            (acc, tarefa) => acc += Number(tarefa.pontos), 0   
+        )
+        document.querySelector("#pontuacao").innerHTML = pontosObtidos + "/" + total
 }
-function filtrar(lista){
+function filtrar(lista) {
     document.querySelector("#tarefas").innerHTML = ""
     lista.forEach(tarefa =>
         document.querySelector("#tarefas").innerHTML += criarCard(tarefa))
-        
-    }
+
+}
 
 function cadastrar() {
     const titulo = document.querySelector("#titulo").value
@@ -27,50 +37,50 @@ function cadastrar() {
     const modal = bootstrap.Modal.getInstance(document.querySelector("#exampleModal"))
 
     const tarefa = { //JSON JAVA CRIPT OBJECT NOTATION
-        
+
         id: Date.now(),
         titulo,
         pontos,
         categoria,
         concluida: false
     }
-    if (!isValid(tarefa.titulo, document.querySelector("#titulo")))return
-    if (!isValid(tarefa.pontos, document.querySelector("#pontos")))return
-        
-        tarefas.push(tarefa)
-       
+    if (!isValid(tarefa.titulo, document.querySelector("#titulo"))) return
+    if (!isValid(tarefa.pontos, document.querySelector("#pontos"))) return
 
-        atualizar()
-        modal.hide()
+    tarefas.push(tarefa)
+
+
+    atualizar()
+    modal.hide()
 }
-function isValid (valor,campo){
-    if(valor.length == 0) {
+function isValid(valor, campo) {
+    if (valor.length == 0) {
         campo.classList.add("is-invalid")
         campo.classList.remove("is-valid")
         return false
-    } else{
-        campo.classList.add("is-valid") 
-        campo.classList.remove("is-invalid")  
+    } else {
+        campo.classList.add("is-valid")
+        campo.classList.remove("is-invalid")
         return true
     }
-    
+
 
 }
 
 function apagar(id) {
-    tarefas = tarefas.filter(tarefa=> tarefa.id !== id)
+    tarefas = tarefas.filter(tarefa => tarefa.id !== id)
     atualizar()
 }
-function concluir(id){
-   let tarefaEncontrada = tarefas.find(tarefa => tarefa.id == id)
-   tarefaEncontrada.concluida = true
+function concluir(id) {
+    let tarefaEncontrada = tarefas.find(tarefa => tarefa.id == id)
+    tarefaEncontrada.concluida = true
     atualizar()
 }
 
 function criarCard(tarefa) {
     let disabled = tarefa.concluida ? "disabled" : ""
-    
-    
+
+
     const card = `
         <div class="col-lg-3 col-md-6 col-sm-12">
         <div class="card">
